@@ -1,0 +1,8 @@
+secret:
+  enabled: false
+
+overrides:
+  env:
+    #- DEMO_API_URL: http://20.238.160.249/
+    - DEMO_API_URL: http://demo-api.default.svc.cluster.local/
+    #- DEMO_API_URL: http://<service-name>.<service-namespace>.svc.cluster.local/

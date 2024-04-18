@@ -1,0 +1,113 @@
+______________________ IMAGES ______________________
+
+- filter for 'Dockerfile'
+- show base image, highlights:
+	- alpine
+	- port exposed 8080, AKS could take care of SSL termination
+	- setting of globalization and language settings
+	- installing libraries like openssl
+	- cleaning of cache files to keep the image size small
+	
+- show image for app and api, highlight it is using multi stage docker builds to:
+	- do some changes to the app and api
+		- change number of forecasts
+		- change version number in website
+	- DO NOT FORGET TO UPDATE $imageTag IN YAML FILES	
+	- build the app/api
+	- publish the binaries
+	- build the final docker layer using only the published binaries ontop of the base image	
+
+
+______________________ CONTROL PLANE ______________________
+
+- kubectl get pods
+- kubectl describe pod 
+	- use <pod id>
+	- use pod label (-l 'app.kubernetes.io/instance=demo-app')
+- kubectl logs 
+	- use <pod id>
+	- use -f flag to follow logs
+- kubectl exec
+	- login to pod, kubectl exec -it <pod id> ash
+	- show env variables, env | grep DEMO
+- show shortcuts
+	
+- portal
+	- show services
+		- open api, http://api/weer
+		- open app
+	- show workloads > pods 
+		- show logs
+		- restart pod by deleting it
+	- show configuration > config-map
+	- show deployment capabilities, note manual and limited
+	- SHOW YAML configuration, highlight
+		- Learning curve
+		- Reusability
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+______________________ MANAGEMENT ______________________
+
+- show helm list, highlight
+	- revisions update for each install, upgrade, rollback
+- show helm status, highlight
+	- shows latest release notes
+
+- go over helm create chart
+	- helm create <chart name>
+	- show in vscode
+	- explain a helm chart is a template for generating all the yaml files for a single deployment
+	- explain we created a fleshed out demo chart
+- show helm chart build, highlight
+	- lint 
+	
+- show helm files for app/api, highlight
+	- helm files define deployed image by tag
+	- incorrect pull policy, using IfNotPresent may lead to issues when node cache get's corrupted
+	
+- Do some changes to the yaml files
+	- change instance count for api fromn 1 to 2
+- show helm upgrade
+- show helm rollback
+
+- POSE PROBLEMS with current solution:
+	- the app now depends on the IP of the api's loadbalancer
+		- fix by changing DEMO_API_URL to use the internal DNS resolution. 
+			note that we configured the chart to correctly configure the config-map and deployment to make use of these variables
+		- do helm upgrade
+	- the api's ip is public
+		- fix by setting internal false, this will make the AKS service use an internal azure loadbalancer which makes it use a internal ip. 
+			show we needed to set an annotation to fix this, service.beta.kubernetes.io/azure-load-balancer-internal
+		- do helm upgrade
+	- the container is running as root by default
+		- highlight we can fix this by setting the securityContext from the chart, this mitigates a lot of issues
+		- we can also create a seperate user on the docker container
+
+- show helm uninstall 
+- show helm install

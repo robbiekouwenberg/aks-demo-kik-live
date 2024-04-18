@@ -1,0 +1,26 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Innvolve @ K!K Live";
+}
+
+<div class="text-center">
+    <h1 class="display-4">K!K Live Weerstation Versie 2.0</h1>
+        <table>
+            <tr>
+                <th>Datum</th>
+                <th>Weertype</th>
+                <th>Temp. °C</th>
+                <th>Temp. °F</th>
+            </tr>
+            @{ foreach (var forecast in this.Model.WeatherForecasts)
+            {
+                <tr>
+                    <td>@forecast.Date</td>
+                    <td>@forecast.Summary</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                </tr>
+            }}
+        </table>
+</div>

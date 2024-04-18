@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "appname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.service.internal | default false }}
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      {{- if not .Values.service.internal | default false }}
+      targetPort: {{ .Values.service.containerPort }}
+      protocol: TCP
+      {{- end }}
+      name: {{ .Values.service.name }}
+  selector:
+    {{- include "chart.selectorLabels" . | nindent 4 }}
